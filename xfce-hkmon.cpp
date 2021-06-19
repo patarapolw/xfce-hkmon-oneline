@@ -43,6 +43,7 @@
 
 #define VA_STR(x) dynamic_cast<std::ostringstream const&>(std::ostringstream().flush() << x).str()
 
+auto constexpr KB_i = 1000LL;
 auto constexpr MB_i = 1000000LL;
 auto constexpr MB_f = 1000000.0;
 auto constexpr GB_i = 1000000000LL;
@@ -360,6 +361,7 @@ struct Network
     {
         enum class Unit { bit, byte } unit;
         int64_t perSecond;
+        bool singleLine;
     };
 
     std::map<Name, Interface> interfaces;
@@ -398,6 +400,15 @@ std::istream& operator>>(std::istream& in, Network::Interface& ifz)
 std::ostream& operator<<(std::ostream& out, const Network::Bandwidth& speed)
 {
     char unit = (speed.unit == Network::Bandwidth::Unit::bit)? 'b' : 'B';
+
+    if (speed.singleLine) {
+        if (speed.perSecond == 0) return out << "0";
+        if (speed.perSecond < KB_i) return out << speed.perSecond << unit;
+        if (speed.perSecond < MB_i) return out << speed.perSecond / 1000 << "K";
+        return out << std::fixed << std::setprecision(3) << speed.perSecond / MB_f << "M";
+    }
+
+    if (speed.perSecond < KB_i) return out << speed.perSecond << " " << unit << "ps";
     if (speed.perSecond < MB_i) return out << speed.perSecond / 1000 << " K" << unit << "ps";
     return out << std::fixed << std::setprecision(3) << speed.perSecond / MB_f << " M" << unit << "ps";
 }
@@ -626,7 +637,7 @@ int main(int argc, char** argv)
                 if (speed > 0) reportDetail << " - " << Network::Bandwidth { netSpeedUnit, speed };
                 reportDetail << " \n";
                 if (isSelectedInterface)
-                    reportStd << std::setw(singleLine? 0 : 6) << Network::Bandwidth { netSpeedUnit, speed } << " " << icon
+                    reportStd << std::setw(singleLine? 0 : 6) << Network::Bandwidth { netSpeedUnit, speed, singleLine } << " " << icon
                               << (singleLine? " " : " \n");
             };
 
