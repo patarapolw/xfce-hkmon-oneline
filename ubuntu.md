@@ -11,5 +11,5 @@ sudo mv ./xfce-hkmon /usr/local/bin/
 After adding a genmon applet, the command would be
 
 ```sh
-xfce-hkmon NET CPU TEMP IO RAM SNAP LINE
+xfce-hkmon NET CPU IO RAM SNAP LINE
 ```
