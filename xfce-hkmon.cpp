@@ -509,12 +509,14 @@ int main(int argc, char** argv)
     std::string selectedNetworkInterface;
 
     bool singleLine = false;
+    bool isSnap = false;
     int posRam = 0;
     int posTemp = 0;
     for (int i = 1; i < argc; i++)
     {
         std::string arg(argv[i]);
         if      ((arg == "LINE")) singleLine = true;
+        else if ((arg == "SNAP")) isSnap = true;
         else if ((arg == "CPU"))  new_CPU.reset(new CPU());
         else if ((arg == "RAM"))  posRam = i, new_Memory.reset(new Memory());
         else if ((arg == "IO"))   new_IO.reset(new IO());
@@ -728,6 +730,10 @@ int main(int argc, char** argv)
     {
         for (auto nitd = new_IO->devices.cbegin(); nitd != new_IO->devices.cend(); ++nitd)
         {
+            if (isSnap && (nitd->first).rfind("loop", 0) == 0) {
+                continue;
+            }
+
             const IO::Device& device = nitd->second;
             auto prevdev = old_IO->devices.find(nitd->first);
             if ((device.bytesRead || device.bytesWritten) && (prevdev != old_IO->devices.end()))
