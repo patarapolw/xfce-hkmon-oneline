@@ -405,7 +405,7 @@ std::ostream& operator<<(std::ostream& out, const Network::Bandwidth& speed)
         if (speed.perSecond == 0) return out << "0";
         if (speed.perSecond < KB_i) return out << speed.perSecond << unit;
         if (speed.perSecond < MB_i) return out << speed.perSecond / 1000 << "K";
-        return out << std::fixed << std::setprecision(3) << speed.perSecond / MB_f << "M";
+        return out << std::fixed << std::setprecision(1) << speed.perSecond / MB_f << "M";
     }
 
     if (speed.perSecond < KB_i) return out << speed.perSecond << " " << unit << "ps";
