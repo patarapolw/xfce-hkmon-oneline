@@ -723,7 +723,7 @@ int main(int argc, char** argv)
     if (new_Memory) // RAM report
     {
         if (new_CPU && (!posTemp || (posRam < posTemp)))
-            reportStd << (singleLine? "" : " ") << (new_Memory->ram.cached + new_Memory->ram.buffers) / 1024 << "M" << (singleLine? " " : "\n");
+            reportStd << (singleLine? "" : " ") << DataSize { (new_Memory->ram.cached + new_Memory->ram.buffers) * 1024 } << (singleLine? " " : "\n");
 
         reportDetail << " Memory " << new_Memory->ram.total/1024 << " MiB:\n"
             << Padded<uint64_t> { 1000000, new_Memory->ram.available/1024 } << " MiB available \n"
